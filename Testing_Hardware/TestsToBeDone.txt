@@ -1,0 +1,38 @@
+CircuitPython Tests
+------------------------------------
+
+
+Nano:
+
+PASS	Digital Out (
+PASS	Digital In (Onboard user button on D3 and external button on other Dx pins, A0-A5) 
+FAIL	Analog Out - non-DAC pins
+PASS	Analog In 
+PASS	PWM - Audio out with changing freq
+PASS	Cap Touch
+PASS	Servo
+PASS	UART 
+PASS	I2C 
+PASS	HID Keyboard and Mouse
+PASS	Flash Storage
+PASS	CPU Temp
+PASS	BLE 
+PASS	CAN
+PASS	QWIIC
+		
+
+Ruler & Nano Tests:
+
+PASS	DAC Audio Out
+PASS	NeoPixel
+PASS	SD Card
+PASS	LCD (Backlight on D5)
+PASS	IMU
+
+
+
+
+
+
+
+
