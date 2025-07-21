@@ -2,17 +2,17 @@ Demo Progress:
 
 Demo 1: 
 	Meatball accelerometer 	- Completed
-	Meatball gyroscope 		- Completed
+	Meatball gyroscope	- Completed
 	Meatball magnetometer 	- Not yet started
 	
 Demo 2:
-	BME680 LCD Terminal		- Completed
+	BME680 LCD Terminal	- Completed
 	BME680 LCD Color Labels	- Completed
-	BME680 NeoPixels		- Completed
+	BME680 NeoPixels	- Completed
 	
 Demo 3:
-	APDS9960 Gesture map to WAV file outputs 						- Completed
-	APDS9960 Proximity to Tone										- Completed
+	APDS9960 Gesture map to WAV file outputs 			- Completed
+	APDS9960 Proximity to Tone					- Completed
 	APDS9960 Read Color print RGB values, reproduce on NeoPixels	- Completed
 	
 	
