@@ -2,6 +2,7 @@
 #
 # Adds a thin green border around the gameplay area (1 physical pixel).
 # Keeps score/high-score > 10, shows Game Over overlay, NVM high-score.
+# Plays 210.wav when food is eaten, 140.wav on Game Over.
 #
 import time
 import board
@@ -17,6 +18,44 @@ supervisor.runtime.autoreload = False
 
 # --- IMU (ICM-20948) ---
 import adafruit_icm20x  # ensure adafruit_icm20x.mpy/.py is in /lib
+
+# =========================
+# AUDIO (same setup as your Gesture demo: WaveFile + AudioOut(board.DAC))
+# =========================
+# Gesture demo uses: from audiocore import WaveFile; from audioio import AudioOut; audio = AudioOut(board.DAC)
+# We keep file handles open so playback is reliable on all builds.
+try:
+    from audiocore import WaveFile
+    from audioio import AudioOut
+    audio = AudioOut(board.DAC)  # use the on-board DAC pin feeding the amp
+
+    _wav210_f = open("210.wav", "rb")  # food sfx
+    _wav210 = WaveFile(_wav210_f)
+
+    _wav140_f = open("140.wav", "rb")  # game over sfx
+    _wav140 = WaveFile(_wav140_f)
+
+    def _audio_play(w):
+        try:
+            if audio.playing:
+                audio.stop()
+        except Exception:
+            pass
+        try:
+            audio.play(w)
+        except Exception as e:
+            print("Audio play error:", e)
+
+    def sfx_food():
+        _audio_play(_wav210)
+
+    def sfx_gameover():
+        _audio_play(_wav140)
+
+except Exception as e:
+    print("Audio init failed:", e)
+    def sfx_food(): pass
+    def sfx_gameover(): pass
 
 # =========================
 # Mode NeoPixel (status LED)
@@ -157,17 +196,12 @@ def _add_green_border():
     x0 = game_layer.x
     y0 = game_layer.y
 
-    # draw 1-physical-pixel border *around* the area (just outside edges)
     border_group = displayio.Group()
     if _use_vectorio:
         pal = displayio.Palette(1); pal[0] = BORDER_COLOR
-        # top
         border_group.append(VRectangle(pixel_shader=pal, x=x0,               y=y0 - 1,            width=width_px,  height=1))
-        # bottom
         border_group.append(VRectangle(pixel_shader=pal, x=x0,               y=y0 + height_px,    width=width_px,  height=1))
-        # left
         border_group.append(VRectangle(pixel_shader=pal, x=x0 - 1,           y=y0,                width=1,         height=height_px))
-        # right
         border_group.append(VRectangle(pixel_shader=pal, x=x0 + width_px,    y=y0,                width=1,         height=height_px))
     else:
         pal = displayio.Palette(1); pal[0] = BORDER_COLOR
@@ -175,7 +209,6 @@ def _add_green_border():
         bottom_bmp = displayio.Bitmap(width_px, 1, 1)
         left_bmp   = displayio.Bitmap(1, height_px, 1)
         right_bmp  = displayio.Bitmap(1, height_px, 1)
-        # fill the single color index
         for x in range(width_px):
             top_bmp[x, 0] = 0
             bottom_bmp[x, 0] = 0
@@ -187,7 +220,6 @@ def _add_green_border():
         border_group.append(displayio.TileGrid(left_bmp,   pixel_shader=pal, x=x0 - 1,           y=y0))
         border_group.append(displayio.TileGrid(right_bmp,  pixel_shader=pal, x=x0 + width_px,    y=y0))
 
-    # put border above game layer but below UI text
     root.append(border_group)
 
 _add_green_border()
@@ -351,6 +383,8 @@ def _show_game_over_stats(duration=3.0):
     ui.remove(overlay)
 
 def game_over_sequence():
+    # play the game-over WAV just like the Gesture demo does
+    sfx_gameover()
     _flash_screen_red(0.15)
     _show_game_over_stats(3.0)
 
@@ -382,6 +416,7 @@ def step_game():
         reset_game(reset_score=not DEMO_MODE)
         return
     elif hit_self:
+        game_over_sequence()
         reset_game(reset_score=not DEMO_MODE)
         return
 
@@ -391,6 +426,8 @@ def step_game():
         if not DEMO_MODE:
             score += 1
             update_score_label()
+            # play the eat-food WAV just like the Gesture demo does
+            sfx_food()
             if score > high_score:
                 high_score = score
                 try:
