@@ -16,6 +16,7 @@ Demo 3-1: APDS9960 (proximity, gesture, color): Gesture displayed on LCD termina
 Demo 3-2: APDS9960 (proximity, gesture, color): Gesture mapped to WAV files  
 Demo 3-3: APDS9960 (proximity, gesture, color): Color measurement taken with RGB values displayed on LCD and color reproduced on NeoPixels  
 Demo 3-4: APDS9960 (proximity, gesture, color): Gesture mapped to audio tone, as a simple digital "Theremin"  
+Demo 4-0: Snake game ported to use IMU as user input, NVM high score, and sound effects 
 
 Over time more project demos will be added.
 
